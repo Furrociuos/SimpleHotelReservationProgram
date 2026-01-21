@@ -1,5 +1,5 @@
 import java.io.*;
-import java.util.InputMismatchException; // A platform agnostic way to obtain file paths
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
@@ -7,6 +7,7 @@ public class Main {
     Scanner in = new Scanner(System.in);
     File csvDirectory = new File("CSVs");
 
+    // Checks if the "CSVs" folder exists then creates it if it dosen't
       if (csvDirectory.mkdir()) {
         System.out.println("CSV directory does not exist. Creating...");
       }
@@ -18,7 +19,7 @@ public class Main {
     // Main Menu
     boolean selection = false;
 
-      System.out.println("What would you like to do?\n  1. Add a reservation\n  2. Remove a reservation\n  3. Modify a reservation");
+      System.out.println("What would you like to do? (CTRL + C to stop the program)\n  1. Add a reservation\n  2. Remove a reservation\n  3. Modify a reservation");
 
     while (selection == false) {
       try {
@@ -38,10 +39,10 @@ public class Main {
               selection = true;
               break;
             default:
-              System.out.println("Invalid! Please enter a valid number");
+              System.out.println("Invalid! Please enter a valid number"); // Continues loop if input is invalid
         }
     } catch (InputMismatchException e) {
-        System.out.println("Invalid! Please enter a valid number");
+        System.out.println("Invalid! Please enter a valid number"); // Continues loop if input is invalid
         in.nextLine();
       }
     }

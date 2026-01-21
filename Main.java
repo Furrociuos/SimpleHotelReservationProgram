@@ -11,10 +11,11 @@ public class Main {
         System.out.println("CSV directory does not exist. Creating...");
       }
 
-      System.out.println("Enter the name of your csv file: ");
+      System.out.print("Enter the name of your csv file: ");
         String file = in.nextLine();
           csvCheckandCreate(file); // Checks if the csv file exists
 
+    // Main Menu
     boolean selection = false;
 
       System.out.println("What would you like to do?\n  1. Add a reservation\n  2. Remove a reservation\n  3. Modify a reservation");

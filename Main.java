@@ -9,10 +9,12 @@ public class Main {
 
     // Checks if the "CSVs" folder exists then creates it if it dosen't
       if (csvDirectory.mkdir()) {
-        System.out.println("CSV directory does not exist. Creating...");
+        System.out.println("CSV folder does not exist. Creating...");
       }
+    
+      listCSVs();
 
-      System.out.print("Enter the name of your csv file: ");
+      System.out.print("Enter the name of your csv file (Without file extension): ");
         String file = in.nextLine();
           csvCheckandCreate(file); // Checks if the csv file exists
 
@@ -46,6 +48,16 @@ public class Main {
         in.nextLine();
       }
     }
+  }
+  
+  private static void listCSVs() {
+      File csvDirectory = new File("CSVs");  
+      File[] files = csvDirectory.listFiles();
+
+      System.out.println("CSVs/");
+      for (File file : files) {
+          System.out.println("  └ " + file.getName());
+      }
   }
 
   private static void csvCheckandCreate(String filename) {

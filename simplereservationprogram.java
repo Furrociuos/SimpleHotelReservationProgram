@@ -11,7 +11,7 @@ public class Main {
         String file = in.nextLine();
           csvCheckandCreate(file); // Checks if the csv file exists
 
-      System.out.print("What would you like to do? (Enter number for selection)\n  1. Add a Reservation\n  2.  Remove a reservation")
+      System.out.print("What would you like to do? (Enter number for selection)\n  1. Add a Reservation\n  2.  Remove a reservation");
 
   }
 

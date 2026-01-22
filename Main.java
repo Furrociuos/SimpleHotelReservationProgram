@@ -5,7 +5,6 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) {
-        Scanner in = new Scanner(System.in);
         File csvDirectory = new File("CSVs");
 
         // Checks if the "CSVs" folder exists then creates it if it dosen't
@@ -16,6 +15,7 @@ public class Main {
         // Lists down what files are contained in the "CSVs" folder
         listCSVs();
 
+        Scanner in = new Scanner(System.in);
         System.out.print(
             "Enter the name of your csv file (Without file extension): "
         );
@@ -60,6 +60,7 @@ public class Main {
     }
 
     private static void mainMenu() {
+        Scanner in = new Scanner(System.in);
         boolean selection = false;
         while (selection == false) {
             try {
@@ -85,7 +86,9 @@ public class Main {
                 }
             } catch (InputMismatchException e) {
                 System.out.println("Invalid! Please enter a valid number"); // Continues loop if input is invalid
+                in.nextLine();
             }
         }
+        in.close();
     }
 }

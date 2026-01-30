@@ -1,4 +1,6 @@
 import java.io.*;
+import java.io.FileWriter;
+import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -27,6 +29,8 @@ public class Main {
             "What would you like to do? (CTRL + C to stop the program)\n  1. Add a reservation\n  2. Remove a reservation\n  3. Modify a reservation"
         );
         mainMenu();
+
+        in.close();
     }
 
     private static void listCSVs() {
@@ -51,6 +55,25 @@ public class Main {
             else {
                 System.out.print("File not found. Creating...\n");
                 csv.createNewFile();
+                FileWriter writer = new FileWriter(csv);
+
+                String[][] rooms = new String[21][3];
+                rooms[0][0] = "Rooms";
+                rooms[0][1] = "Customer";
+                rooms[0][2] = "Status";
+
+                for (int i = 1; i < rooms.length; i++) {
+                    rooms[i][0] = Integer.toString(i);
+                    rooms[i][1] = "N/A";
+                    rooms[i][2] = "Available";
+                }
+
+                Arrays.toString(rooms);
+
+                for (String[] room : rooms) {
+                    writer.write(String.join(" | ", room) + "\n");
+                }
+                writer.close();
             }
         } catch (IOException e) {
             System.out.println(
@@ -60,12 +83,12 @@ public class Main {
     }
 
     private static void mainMenu() {
-        Scanner in = new Scanner(System.in);
+        Scanner menu = new Scanner(System.in);
         boolean selection = false;
         while (selection == false) {
             try {
                 System.out.print("Please enter a number: ");
-                int userChoice = in.nextInt();
+                int userChoice = menu.nextInt();
                 switch (userChoice) {
                     case 1:
                         //                        addReservation();
@@ -86,9 +109,9 @@ public class Main {
                 }
             } catch (InputMismatchException e) {
                 System.out.println("Invalid! Please enter a valid number"); // Continues loop if input is invalid
-                in.nextLine();
+                menu.nextLine();
             }
         }
-        in.close();
+        menu.close();
     }
 }

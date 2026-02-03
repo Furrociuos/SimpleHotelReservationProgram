@@ -11,6 +11,7 @@ public class Main {
     private static List<String[]> reservationData = new ArrayList<>(); // Makes ArrayList accessible to all functions
 
     public static void main(String[] args) {
+        boolean loop = true;
         File csvDirectory = new File("CSVs");
 
         // Checks if the "CSVs" folder exists then creates it if it dosen't
@@ -18,19 +19,19 @@ public class Main {
             System.out.println("CSV folder does not exist. Creating...");
         }
 
-        String file = selCSV(); // Lists and selects csv file
+        do {
+            String file = selCSV(); // Lists and selects csv file
 
-        clearScreen(); // Clears console
-        csvCheckandCreate(file + ".csv"); // Checks if the csv file exists
-        reservationData = parseCSV(file + ".csv"); // Parse selected csv file
-        displayData(reservationData); // Display parsed data
+            clearScreen(); // Clears console
 
-        // Main Menu
-        System.out.println(
-            "What would you like to do? (CTRL + C to quit)\n  1. Add a reservation\n  2. Remove a reservation\n  3. Modify a reservation"
-        );
-        mainMenu(file);
-        in.close();
+            // Main Menu
+            reservationData = parseCSV(file + ".csv"); // Parse selected csv file
+            displayData(reservationData); // Display parsed data
+            System.out.println(
+                "What would you like to do? (CTRL + C to quit)\n  1. Add a reservation\n  2. Remove a reservation\n  3. Modify a reservation\n  4. Open a different csv file"
+            );
+            mainMenu(file);
+        } while (loop);
     }
 
     private static void listCSVs() {
@@ -51,6 +52,7 @@ public class Main {
         System.out.print("Enter the name of your csv file: ");
 
         String file = in.nextLine();
+        csvCheckandCreate(file + ".csv"); // Checks if the csv file exists
 
         return file;
     }
@@ -148,7 +150,7 @@ public class Main {
     private static void mainMenu(String filename) {
         boolean loop = true;
 
-        do {
+        while (loop) {
             try {
                 System.out.print("Please enter a number: ");
                 int userChoice = in.nextInt();
@@ -161,12 +163,16 @@ public class Main {
                     case 2:
                         clearScreen();
                         loop = false;
-                        //rmReservation(filename);
+                        rmReservation(filename);
                         break;
                     case 3:
                         clearScreen();
                         loop = false;
-                        //modReservation();
+                        modReservation(filename);
+                        break;
+                    case 4:
+                        loop = false;
+                        in.nextLine();
                         break;
                     default:
                         System.out.println(
@@ -177,7 +183,7 @@ public class Main {
                 System.out.println("Invalid! Please enter a valid number"); // Continues loop if input is invalid
                 in.nextLine();
             }
-        } while (loop);
+        }
     }
 
     private static void addReservation(String filename) {
@@ -214,9 +220,117 @@ public class Main {
                 );
                 String choice = in.nextLine();
 
-                if (choice.toLowerCase().equals("y")) {
+                if (choice.equalsIgnoreCase("y")) {
                     clearScreen();
                     System.out.println("Add another reservation...");
+                    continue;
+                } else {
+                    clearScreen();
+                    saveCSV(filename + ".csv", reservationData);
+                    System.out.println("Changes saved.");
+                    loop = false;
+                    break;
+                }
+            } catch (InputMismatchException e) {}
+            clearScreen();
+            System.out.println("Invalid! Please enter a valid number."); // Continues loop if input is invalid
+            in.nextLine();
+        } while (loop);
+    }
+
+    private static void rmReservation(String filename) {
+        boolean loop = true;
+
+        do {
+            try {
+                displayData(reservationData);
+                System.out.print(
+                    "Enter the room number of the reservation to remove: "
+                );
+                int i = in.nextInt();
+                in.nextLine();
+
+                if (i > 20) {
+                    System.out.println("Room does not exist.");
+                    continue;
+                }
+
+                String[] roomUpdate = reservationData.get(i);
+
+                if (!roomUpdate[2].equalsIgnoreCase("Available")) {
+                    clearScreen();
+                    System.out.println("Room is already reserved.");
+                    continue;
+                }
+
+                if (!roomUpdate[2].equalsIgnoreCase("Reserved")) {
+                    clearScreen();
+                    System.out.println("Room is already not reserved.");
+                    continue;
+                }
+
+                roomUpdate[1] = "N/A";
+                roomUpdate[2] = "Available";
+
+                System.out.print(
+                    "Would you like to remove another reservation? (y/N): "
+                );
+                String choice = in.nextLine();
+
+                if (choice.equalsIgnoreCase("y")) {
+                    clearScreen();
+                    System.out.println("Remove another reservation...");
+                    continue;
+                } else {
+                    clearScreen();
+                    saveCSV(filename + ".csv", reservationData);
+                    System.out.println("Changes saved.");
+                    loop = false;
+                    break;
+                }
+            } catch (InputMismatchException e) {}
+            clearScreen();
+            System.out.println("Invalid! Please enter a valid number"); // Continues loop if input is invalid
+            in.nextLine();
+        } while (loop);
+    }
+
+    private static void modReservation(String filename) {
+        boolean loop = true;
+
+        do {
+            try {
+                displayData(reservationData);
+                System.out.print("Enter the room number to modify: ");
+                int i = in.nextInt();
+                in.nextLine();
+
+                if (i > 20) {
+                    System.out.println("Room does not exist.");
+                    continue;
+                }
+
+                String[] roomUpdate = reservationData.get(i);
+
+                if (!roomUpdate[2].equalsIgnoreCase("Reserved")) {
+                    clearScreen();
+                    System.out.println("Reservation does not exist.");
+                    continue;
+                }
+
+                System.out.print("Enter a new name: ");
+                String name = in.nextLine();
+
+                roomUpdate[1] = name;
+
+                System.out.print(
+                    "Would you like to modify another reservation? (y/N): "
+                );
+                String choice = in.nextLine();
+
+                if (choice.equalsIgnoreCase("y")) {
+                    clearScreen();
+                    System.out.println("Modify another reservation...");
                     continue;
                 } else {
                     clearScreen();

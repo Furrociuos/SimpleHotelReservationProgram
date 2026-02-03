@@ -26,10 +26,6 @@ public class Main {
 
             // Main Menu
             reservationData = parseCSV(file + ".csv"); // Parse selected csv file
-            displayData(reservationData); // Display parsed data
-            System.out.println(
-                "What would you like to do? (CTRL + C to quit)\n  1. Add a reservation\n  2. Remove a reservation\n  3. Modify a reservation\n  4. Open a different csv file"
-            );
             mainMenu(file);
         } while (loop);
     }
@@ -152,22 +148,26 @@ public class Main {
 
         while (loop) {
             try {
+                displayData(reservationData); // Display parsed data
+
+                System.out.println(
+                    "What would you like to do? (CTRL + C to quit)\n  1. Add a reservation\n  2. Remove a reservation\n  3. Modify a reservation\n  4. Open a different csv file"
+                );
+
                 System.out.print("Please enter a number: ");
                 int userChoice = in.nextInt();
+
                 switch (userChoice) {
                     case 1:
                         clearScreen();
-                        loop = false;
                         addReservation(filename);
                         break;
                     case 2:
                         clearScreen();
-                        loop = false;
                         rmReservation(filename);
                         break;
                     case 3:
                         clearScreen();
-                        loop = false;
                         modReservation(filename);
                         break;
                     case 4:

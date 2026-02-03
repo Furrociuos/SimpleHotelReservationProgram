@@ -22,7 +22,8 @@ public class Main {
         }
 
         do {
-            String file = selCSV(); // Lists and selects csv file
+            listCSVs();
+            String file = selCSV();
 
             // Main Menu
             reservationData = parseCSV(file + ".csv"); // Parse selected csv file
@@ -30,6 +31,7 @@ public class Main {
         } while (loop);
     }
 
+    // Lists csv files in the "CSVs" folder
     private static void listCSVs() {
         File csvDirectory = new File("CSVs");
         File[] files = csvDirectory.listFiles();
@@ -42,19 +44,19 @@ public class Main {
         }
     }
 
+    // Selects csv file
     private static String selCSV() {
-        listCSVs();
-
         System.out.print("Enter the name of your csv file: ");
 
         String file = in.nextLine();
 
         clearScreen(); // Clears the console
-        csvCheckandCreate(file + ".csv"); // Checks if the csv file exists
+        csvCheckandCreate(file + ".csv");
 
         return file;
     }
 
+    // Checks if the csv file exists
     private static void csvCheckandCreate(String filename) {
         try {
             File csv = new File("CSVs", filename);
@@ -69,6 +71,7 @@ public class Main {
                 csv.createNewFile();
                 FileWriter writer = new FileWriter(csv);
 
+                // File formatting
                 String[][] rooms = new String[21][3];
                 rooms[0][0] = "Rooms";
                 rooms[0][1] = "Customer";
@@ -109,6 +112,7 @@ public class Main {
         return data;
     }
 
+    // Prints parsed data
     private static void displayData(List<String[]> data) {
         // Informs the user if no data is found
         if (data.isEmpty()) {
@@ -140,6 +144,7 @@ public class Main {
         }
     }
 
+    // Clears console text -  code credits: https://www.javaspring.net/blog/clear-the-console-in-java/
     private static void clearScreen() {
         System.out.print("\033[H\033[2J");
         System.out.flush();
@@ -150,7 +155,7 @@ public class Main {
 
         while (loop) {
             try {
-                displayData(reservationData); // Display parsed data
+                displayData(reservationData);
 
                 System.out.println(
                     "What would you like to do? (CTRL + C to quit)\n  1. Add a reservation\n  2. Remove a reservation\n  3. Modify a reservation\n  4. Open a different csv file"
@@ -160,19 +165,19 @@ public class Main {
                 int userChoice = in.nextInt();
 
                 switch (userChoice) {
-                    case 1:
+                    case 1: // Add a reservation
                         clearScreen();
                         addReservation(filename);
                         break;
-                    case 2:
+                    case 2: // Remove a reservation
                         clearScreen();
                         rmReservation(filename);
                         break;
-                    case 3:
+                    case 3: // Modify a reservation (customer name)
                         clearScreen();
                         modReservation(filename);
                         break;
-                    case 4:
+                    case 4: // Loops back to the start for csv selection
                         clearScreen();
                         loop = false;
                         in.nextLine();
@@ -261,15 +266,10 @@ public class Main {
 
                 String[] roomUpdate = reservationData.get(i);
 
-                if (!roomUpdate[2].equalsIgnoreCase("Available")) {
-                    clearScreen();
-                    System.out.println("Room is already reserved.");
-                    continue;
-                }
-
+                // Informs the user if the room is already reserved
                 if (!roomUpdate[2].equalsIgnoreCase("Reserved")) {
                     clearScreen();
-                    System.out.println("Room is already not reserved.");
+                    System.out.println("Room is already available.");
                     continue;
                 }
 
@@ -350,6 +350,7 @@ public class Main {
         } while (loop);
     }
 
+    // Function for saving csv file
     private static void saveCSV(String filename, List<String[]> data) {
         try {
             File csv = new File("CSVs", filename);

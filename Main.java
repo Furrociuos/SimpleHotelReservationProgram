@@ -14,6 +14,8 @@ public class Main {
         boolean loop = true;
         File csvDirectory = new File("CSVs");
 
+        clearScreen();
+
         // Checks if the "CSVs" folder exists then creates it if it dosen't
         if (csvDirectory.mkdir()) {
             System.out.println("CSV folder does not exist. Creating...");
@@ -21,8 +23,6 @@ public class Main {
 
         do {
             String file = selCSV(); // Lists and selects csv file
-
-            clearScreen(); // Clears console
 
             // Main Menu
             reservationData = parseCSV(file + ".csv"); // Parse selected csv file
@@ -48,6 +48,8 @@ public class Main {
         System.out.print("Enter the name of your csv file: ");
 
         String file = in.nextLine();
+
+        clearScreen(); // Clears the console
         csvCheckandCreate(file + ".csv"); // Checks if the csv file exists
 
         return file;
@@ -171,10 +173,12 @@ public class Main {
                         modReservation(filename);
                         break;
                     case 4:
+                        clearScreen();
                         loop = false;
                         in.nextLine();
                         break;
                     default:
+                        clearScreen();
                         System.out.println(
                             "Invalid! Please enter a valid number"
                         ); // Continues loop if input is invalid

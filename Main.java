@@ -1,10 +1,14 @@
 import java.io.*;
 import java.io.FileWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
+
+    private static List<String[]> reservationData = new ArrayList<>();
 
     public static void main(String[] args) {
         File csvDirectory = new File("CSVs");
@@ -21,8 +25,14 @@ public class Main {
         System.out.print(
             "Enter the name of your csv file (Without file extension): "
         );
+
+        System.out.flush(); // Clears the console
+
         String file = in.nextLine();
-        csvCheckandCreate(file); // Checks if the csv file exists
+
+        csvCheckandCreate(file + ".csv"); // Checks if the csv file exists
+        reservationData = parseCSV(file + ".csv");
+        displayData(reservationData);
 
         // Main Menu
         System.out.println(
@@ -45,7 +55,7 @@ public class Main {
 
     private static void csvCheckandCreate(String filename) {
         try {
-            File csv = new File("CSVs", filename + ".csv");
+            File csv = new File("CSVs", filename);
 
             // Informs the user that the file exists
             if (csv.exists()) {
@@ -68,10 +78,8 @@ public class Main {
                     rooms[i][2] = "Available";
                 }
 
-                Arrays.toString(rooms);
-
                 for (String[] room : rooms) {
-                    writer.write(String.join(" | ", room) + "\n");
+                    writer.write(String.join(",", room) + "\n");
                 }
                 writer.close();
             }
@@ -79,6 +87,55 @@ public class Main {
             System.out.println(
                 "File was not created. Do you have permission to create a file?"
             );
+        }
+    }
+
+    // Used for parsing CSV files
+    private static List<String[]> parseCSV(String filename) {
+        List<String[]> data = new ArrayList<>();
+        try {
+            File csv = new File("CSVs", filename);
+            Scanner fileRead = new Scanner(csv);
+
+            while (fileRead.hasNextLine()) {
+                String line = fileRead.nextLine();
+                String[] values = line.split(",");
+                data.add(values);
+            }
+            fileRead.close();
+        } catch (IOException e) {
+            System.out.println("Error reading file: " + e.getMessage());
+        }
+        return data;
+    }
+
+    private static void displayData(List<String[]> data) {
+        if (data.isEmpty()) {
+            System.out.println("No data found.");
+            return;
+        }
+
+        // Determine the maximum number of columns
+        int maxCols = 0;
+        for (String[] row : data) {
+            maxCols = Math.max(maxCols, row.length);
+        }
+
+        // Determine the width for each column
+        int[] colWidths = new int[maxCols];
+        for (String[] row : data) {
+            for (int i = 0; i < row.length; i++) {
+                colWidths[i] = Math.max(colWidths[i], row[i].length());
+            }
+        }
+
+        // Print the data with even spacing
+        for (String[] row : data) {
+            for (int i = 0; i < row.length; i++) {
+                String format = "%-" + (colWidths[i] + 2) + "s";
+                System.out.printf(format, row[i]);
+            }
+            System.out.println();
         }
     }
 

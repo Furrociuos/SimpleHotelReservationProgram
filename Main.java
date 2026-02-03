@@ -1,14 +1,14 @@
 import java.io.*;
 import java.io.FileWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
 public class Main {
 
-    private static List<String[]> reservationData = new ArrayList<>();
+    private static Scanner in = new Scanner(System.in);
+    private static List<String[]> reservationData = new ArrayList<>(); // Makes ArrayList accessible to all functions
 
     public static void main(String[] args) {
         File csvDirectory = new File("CSVs");
@@ -18,28 +18,18 @@ public class Main {
             System.out.println("CSV folder does not exist. Creating...");
         }
 
-        // Lists down what files are contained in the "CSVs" folder
-        listCSVs();
+        String file = selCSV(); // Lists and selects csv file
 
-        Scanner in = new Scanner(System.in);
-        System.out.print(
-            "Enter the name of your csv file (Without file extension): "
-        );
-
-        System.out.flush(); // Clears the console
-
-        String file = in.nextLine();
-
+        clearScreen(); // Clears console
         csvCheckandCreate(file + ".csv"); // Checks if the csv file exists
-        reservationData = parseCSV(file + ".csv");
-        displayData(reservationData);
+        reservationData = parseCSV(file + ".csv"); // Parse selected csv file
+        displayData(reservationData); // Display parsed data
 
         // Main Menu
         System.out.println(
-            "What would you like to do? (CTRL + C to stop the program)\n  1. Add a reservation\n  2. Remove a reservation\n  3. Modify a reservation"
+            "What would you like to do? (CTRL + C to quit)\n  1. Add a reservation\n  2. Remove a reservation\n  3. Modify a reservation"
         );
-        mainMenu();
-
+        mainMenu(file);
         in.close();
     }
 
@@ -49,8 +39,20 @@ public class Main {
 
         System.out.println("CSVs/");
         for (File file : files) {
-            System.out.println("  └ " + file.getName());
+            String filename = file.getName();
+            String nameonly = filename.replace(".csv", ""); // Removes the file extension
+            System.out.println("  └ " + nameonly);
         }
+    }
+
+    private static String selCSV() {
+        listCSVs();
+
+        System.out.print("Enter the name of your csv file: ");
+
+        String file = in.nextLine();
+
+        return file;
     }
 
     private static void csvCheckandCreate(String filename) {
@@ -84,9 +86,7 @@ public class Main {
                 writer.close();
             }
         } catch (IOException e) {
-            System.out.println(
-                "File was not created. Do you have permission to create a file?"
-            );
+            System.out.println("File was not created: " + e.getMessage());
         }
     }
 
@@ -110,6 +110,7 @@ public class Main {
     }
 
     private static void displayData(List<String[]> data) {
+        // Informs the user if no data is found
         if (data.isEmpty()) {
             System.out.println("No data found.");
             return;
@@ -139,25 +140,33 @@ public class Main {
         }
     }
 
-    private static void mainMenu() {
-        Scanner menu = new Scanner(System.in);
-        boolean selection = false;
-        while (selection == false) {
+    private static void clearScreen() {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+    }
+
+    private static void mainMenu(String filename) {
+        boolean loop = true;
+
+        do {
             try {
                 System.out.print("Please enter a number: ");
-                int userChoice = menu.nextInt();
+                int userChoice = in.nextInt();
                 switch (userChoice) {
                     case 1:
-                        //                        addReservation();
-                        selection = true;
+                        clearScreen();
+                        loop = false;
+                        addReservation(filename);
                         break;
                     case 2:
-                        //                        rmReservation();
-                        selection = true;
+                        clearScreen();
+                        loop = false;
+                        //rmReservation(filename);
                         break;
                     case 3:
-                        //                        modReservation();
-                        selection = true;
+                        clearScreen();
+                        loop = false;
+                        //modReservation();
                         break;
                     default:
                         System.out.println(
@@ -166,9 +175,73 @@ public class Main {
                 }
             } catch (InputMismatchException e) {
                 System.out.println("Invalid! Please enter a valid number"); // Continues loop if input is invalid
-                menu.nextLine();
+                in.nextLine();
             }
+        } while (loop);
+    }
+
+    private static void addReservation(String filename) {
+        boolean loop = true;
+
+        do {
+            try {
+                displayData(reservationData);
+                System.out.print("Enter the room number to reserve: ");
+                int i = in.nextInt();
+                in.nextLine();
+
+                if (i > 20) {
+                    System.out.println("Room does not exist.");
+                    continue;
+                }
+
+                String[] roomUpdate = reservationData.get(i);
+
+                if (!roomUpdate[2].equalsIgnoreCase("Available")) {
+                    clearScreen();
+                    System.out.println("Room is already reserved.");
+                    continue;
+                }
+
+                System.out.print("Enter the customer's name: ");
+                String name = in.nextLine();
+
+                roomUpdate[1] = name;
+                roomUpdate[2] = "Reserved";
+
+                System.out.print(
+                    "Would you like to add another reservation? (y/N): "
+                );
+                String choice = in.nextLine();
+
+                if (choice.toLowerCase().equals("y")) {
+                    clearScreen();
+                    System.out.println("Add another reservation...");
+                    continue;
+                } else {
+                    clearScreen();
+                    saveCSV(filename + ".csv", reservationData);
+                    System.out.println("Changes saved.");
+                    loop = false;
+                    break;
+                }
+            } catch (InputMismatchException e) {}
+            clearScreen();
+            System.out.println("Invalid! Please enter a valid number"); // Continues loop if input is invalid
+            in.nextLine();
+        } while (loop);
+    }
+
+    private static void saveCSV(String filename, List<String[]> data) {
+        try {
+            File csv = new File("CSVs", filename);
+            FileWriter save = new FileWriter(csv);
+            for (String[] row : data) {
+                save.write(String.join(",", row) + "\n");
+            }
+            save.close();
+        } catch (IOException e) {
+            System.out.println("Error saving CSV file");
         }
-        menu.close();
     }
 }

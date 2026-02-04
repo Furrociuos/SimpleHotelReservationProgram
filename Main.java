@@ -200,6 +200,12 @@ public class Main {
 
         do {
             try {
+                if (!noReservations()) {
+                    clearScreen();
+                    System.out.println("Nothing to reserve.");
+                    loop = false;
+                    break;
+                }
                 displayData(reservationData);
                 System.out.print("Enter the room number to reserve: ");
                 int i = in.nextInt();
@@ -252,6 +258,13 @@ public class Main {
 
         do {
             try {
+                if (!hasReservations()) {
+                    clearScreen();
+                    System.out.println("Nothing to remove.");
+                    loop = false;
+                    break;
+                }
+
                 displayData(reservationData);
                 System.out.print(
                     "Enter the room number of the reservation to remove: "
@@ -304,6 +317,13 @@ public class Main {
 
         do {
             try {
+                if (!hasReservations()) {
+                    clearScreen();
+                    System.out.println("Nothing to modify");
+                    loop = false;
+                    break;
+                }
+
                 displayData(reservationData);
                 System.out.print("Enter the room number to modify: ");
                 int i = in.nextInt();
@@ -362,5 +382,25 @@ public class Main {
         } catch (IOException e) {
             System.out.println("Error saving CSV file");
         }
+    }
+
+    private static boolean hasReservations() {
+        // Start at index 1 to skip the header row
+        for (int i = 1; i < reservationData.size(); i++) {
+            if (reservationData.get(i)[2].equalsIgnoreCase("Reserved")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean noReservations() {
+        // Start at index 1 to skip the header row
+        for (int i = 1; i < reservationData.size(); i++) {
+            if (reservationData.get(i)[2].equalsIgnoreCase("Available")) {
+                return true;
+            }
+        }
+        return false;
     }
 }

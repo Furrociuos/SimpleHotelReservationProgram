@@ -360,6 +360,21 @@ public class Main {
                 System.out.print("Enter a new name: ");
                 String name = in.nextLine();
 
+                System.out.print(
+                    "Would you like to modify the check-in and check-out date? (y/N): "
+                );
+                String check = in.nextLine();
+
+                if (check.equalsIgnoreCase("y")) {
+                    System.out.print("Enter the new check-in date: ");
+                    String checkin = in.nextLine();
+                    System.out.print("Enter the new check-out date: ");
+                    String checkout = in.nextLine();
+
+                    roomUpdate[3] = checkin;
+                    roomUpdate[4] = checkout;
+                }
+
                 roomUpdate[1] = name;
 
                 System.out.print(

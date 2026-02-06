@@ -1,5 +1,4 @@
 import java.io.*;
-import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
@@ -72,15 +71,19 @@ public class Main {
                 FileWriter writer = new FileWriter(csv);
 
                 // File formatting
-                String[][] rooms = new String[21][3];
+                String[][] rooms = new String[21][5];
                 rooms[0][0] = "Rooms";
                 rooms[0][1] = "Customer";
                 rooms[0][2] = "Status";
+                rooms[0][3] = "Check in date";
+                rooms[0][4] = "Check out date";
 
                 for (int i = 1; i < rooms.length; i++) {
                     rooms[i][0] = Integer.toString(i);
                     rooms[i][1] = "N/A";
                     rooms[i][2] = "Available";
+                    rooms[i][3] = "N/A";
+                    rooms[i][4] = "N/A";
                 }
 
                 for (String[] room : rooms) {
@@ -206,6 +209,7 @@ public class Main {
                     loop = false;
                     break;
                 }
+
                 displayData(reservationData);
                 System.out.print("Enter the room number to reserve: ");
                 int i = in.nextInt();
@@ -227,8 +231,16 @@ public class Main {
                 System.out.print("Enter the customer's name: ");
                 String name = in.nextLine();
 
+                System.out.print("Enter check-in date: ");
+                String checkin = in.nextLine();
+
+                System.out.print("Enter check-out date: ");
+                String checkout = in.nextLine();
+
                 roomUpdate[1] = name;
                 roomUpdate[2] = "Reserved";
+                roomUpdate[3] = checkin;
+                roomUpdate[4] = checkout;
 
                 System.out.print(
                     "Would you like to add another reservation? (y/N): "
@@ -288,6 +300,8 @@ public class Main {
 
                 roomUpdate[1] = "N/A";
                 roomUpdate[2] = "Available";
+                roomUpdate[3] = "N/A";
+                roomUpdate[4] = "N/A";
 
                 System.out.print(
                     "Would you like to remove another reservation? (y/N): "
@@ -384,6 +398,7 @@ public class Main {
         }
     }
 
+    // Checks the list if there are any reservations at all
     private static boolean hasReservations() {
         // Start at index 1 to skip the header row
         for (int i = 1; i < reservationData.size(); i++) {
@@ -394,6 +409,7 @@ public class Main {
         return false;
     }
 
+    // Checks the list if there are any reservations left
     private static boolean noReservations() {
         // Start at index 1 to skip the header row
         for (int i = 1; i < reservationData.size(); i++) {

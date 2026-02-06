@@ -192,6 +192,7 @@ public class Main {
                         ); // Continues loop if input is invalid
                 }
             } catch (InputMismatchException e) {
+                clearScreen();
                 System.out.println("Invalid! Please enter a valid number"); // Continues loop if input is invalid
                 in.nextLine();
             }
